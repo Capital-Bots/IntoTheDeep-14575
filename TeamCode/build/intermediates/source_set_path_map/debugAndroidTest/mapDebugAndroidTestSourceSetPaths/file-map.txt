@@ -1,4 +1,4 @@
-org.firstinspires.ftc.teamcode.test.TeamCode-androidTest-0 /Users/zoebizzi/Documents/GitHub/Centerstage14575-v3/TeamCode/build/generated/res/resValues/androidTest/debug
-org.firstinspires.ftc.teamcode.test.TeamCode-mergeDebugAndroidTestResources-1 /Users/zoebizzi/Documents/GitHub/Centerstage14575-v3/TeamCode/build/intermediates/incremental/debugAndroidTest/mergeDebugAndroidTestResources/merged.dir
-org.firstinspires.ftc.teamcode.test.TeamCode-mergeDebugAndroidTestResources-2 /Users/zoebizzi/Documents/GitHub/Centerstage14575-v3/TeamCode/build/intermediates/incremental/debugAndroidTest/mergeDebugAndroidTestResources/stripped.dir
-org.firstinspires.ftc.teamcode.test.TeamCode-debugAndroidTest-3 /Users/zoebizzi/Documents/GitHub/Centerstage14575-v3/TeamCode/build/intermediates/merged_res/debugAndroidTest/mergeDebugAndroidTestResources
+org.firstinspires.ftc.teamcode.test.TeamCode-androidTest-0 /Users/zoebizzi/Documents/GitHub/IntoTheDeep-14575/TeamCode/build/generated/res/resValues/androidTest/debug
+org.firstinspires.ftc.teamcode.test.TeamCode-mergeDebugAndroidTestResources-1 /Users/zoebizzi/Documents/GitHub/IntoTheDeep-14575/TeamCode/build/intermediates/incremental/debugAndroidTest/mergeDebugAndroidTestResources/merged.dir
+org.firstinspires.ftc.teamcode.test.TeamCode-mergeDebugAndroidTestResources-2 /Users/zoebizzi/Documents/GitHub/IntoTheDeep-14575/TeamCode/build/intermediates/incremental/debugAndroidTest/mergeDebugAndroidTestResources/stripped.dir
+org.firstinspires.ftc.teamcode.test.TeamCode-debugAndroidTest-3 /Users/zoebizzi/Documents/GitHub/IntoTheDeep-14575/TeamCode/build/intermediates/merged_res/debugAndroidTest/mergeDebugAndroidTestResources
