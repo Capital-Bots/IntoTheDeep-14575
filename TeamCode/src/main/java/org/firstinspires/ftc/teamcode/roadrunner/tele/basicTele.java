@@ -49,7 +49,7 @@ import org.firstinspires.ftc.teamcode.HardwareClasses.basicHardware;
  * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
  */
 
-@TeleOp(name="testTele", group="Linear Opmode")
+@TeleOp(name="basicTele", group="Linear Opmode")
 
 public class basicTele extends LinearOpMode {
 
