@@ -5,7 +5,7 @@ INJECTED from /Users/zoebizzi/Documents/GitHub/IntoTheDeep-14575/FtcRobotControl
 	package
 		INJECTED from /Users/zoebizzi/Documents/GitHub/IntoTheDeep-14575/FtcRobotController/src/main/AndroidManifest.xml
 	android:versionName
-		ADDED from /Users/zoebizzi/Documents/GitHub/IntoTheDeep-14575/FtcRobotController/src/main/AndroidManifest.xml:5:11-36
+		ADDED from /Users/zoebizzi/Documents/GitHub/IntoTheDeep-14575/FtcRobotController/src/main/AndroidManifest.xml:5:11-37
 	xmlns:tools
 		ADDED from /Users/zoebizzi/Documents/GitHub/IntoTheDeep-14575/FtcRobotController/src/main/AndroidManifest.xml:3:11-57
 	xmlns:android
