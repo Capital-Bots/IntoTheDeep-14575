@@ -70,24 +70,14 @@ public class testTele extends LinearOpMode {
             double verticalComponent2 = -gamepad2.left_stick_y;
             double lateralComponent2 = gamepad2.left_stick_x;
             double turnComponent2 = gamepad2.right_stick_x;
-            double slideRotatePos = gamepad2.left_trigger;
-            double slideRotateNeg = gamepad2.right_trigger;
-            boolean slideOut = gamepad2.left_bumper;
-            boolean slideIn = gamepad2.right_bumper;
-            boolean rollers = gamepad2.x;
-            boolean rollerDown = gamepad2.a;
-            boolean rollerUp = gamepad2.y;
-            boolean launchPlane1 = gamepad1.b;
-            boolean launchPlane2 = gamepad1.x;
-            boolean pixelHolding = gamepad2.b;
-            boolean rotateHookPos = gamepad1.y;
-            boolean rotateHookNeg = gamepad1.a;
+            double slideMoveUp = gamepad1.right_trigger;
+            double slideMoveDown = gamepad1.left_trigger;
+            boolean intakeArmLeft = gamepad1.a;
+            boolean intakeArmRight = gamepad1.b;
             boolean slowFront = gamepad2.dpad_up;
             boolean slowBack = gamepad2.dpad_down;
             boolean slowLeft = gamepad2.dpad_left;
             boolean slowRight = gamepad2.dpad_right;
-            boolean autoOutToIn = gamepad2.left_stick_button;
-            boolean autoInToOut = gamepad2.right_stick_button;
 
             double SPEED_MULTIPLIER = 0.95;
 
@@ -130,6 +120,12 @@ public class testTele extends LinearOpMode {
                 bl = -1*0.5;
                 br = 0.5;
             }
+
+            if (intakeArmLeft){robot.intakeArm.setPower(0.5);}
+            if (intakeArmRight){robot.intakeArm.setPower(-1 * 0.5);}
+            if (slideMoveDown > 0){robot.rightSlide.setPower(0.5); robot.rightSlide.setPower(-1 * 0.5);}
+            if (slideMoveUp > 0){robot.rightSlide.setPower(-1 * 0.5); robot.rightSlide.setPower(0.5);}
+
 
             robot.leftFrontDrive.setPower(fl);
             robot.rightFrontDrive.setPower(fr);
