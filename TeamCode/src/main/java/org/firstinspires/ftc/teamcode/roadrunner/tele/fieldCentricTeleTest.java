@@ -2,13 +2,14 @@ package org.firstinspires.ftc.teamcode.roadrunner.tele;
 
 import com.acmerobotics.roadrunner.Pose2d;
 import com.acmerobotics.roadrunner.Vector2d;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.teamcode.HardwareClasses.testHardware;
 import org.firstinspires.ftc.teamcode.MecanumDrive;
 
-
+@Disabled
 @TeleOp(group = "drive", name = "fieldcenttest")
 public class fieldCentricTeleTest extends LinearOpMode {
 //     double forwardHeading = Math.toRadians(180);

@@ -53,7 +53,6 @@ import org.firstinspires.ftc.teamcode.HardwareClasses.testHardware;
 
 public class testTele extends LinearOpMode {
 
-    // Declare OpMode members.
     private ElapsedTime runtime = new ElapsedTime();
     private testHardware robot = new testHardware();
 
@@ -72,8 +71,14 @@ public class testTele extends LinearOpMode {
             double turnComponent2 = gamepad2.right_stick_x;
             double slideMoveUp = gamepad1.right_trigger;
             double slideMoveDown = gamepad1.left_trigger;
-            boolean intakeArmLeft = gamepad1.a;
-            boolean intakeArmRight = gamepad1.b;
+            boolean intakeArmOut = gamepad1.a;
+            boolean intakeArmIn = gamepad1.b;
+            boolean rollerIn = gamepad1.x;
+            boolean rollerOut = gamepad1.y;
+            boolean rotateIn = gamepad2.a;
+            boolean rotateOut = gamepad2.b;
+            boolean releases = gamepad2.x;
+            boolean returns = gamepad2.y;
             boolean slowFront = gamepad2.dpad_up;
             boolean slowBack = gamepad2.dpad_down;
             boolean slowLeft = gamepad2.dpad_left;
@@ -121,10 +126,33 @@ public class testTele extends LinearOpMode {
                 br = 0.5;
             }
 
-            if (intakeArmLeft){robot.intakeArm.setPower(0.5);}
-            if (intakeArmRight){robot.intakeArm.setPower(-1 * 0.5);}
-            if (slideMoveDown > 0){robot.rightSlide.setPower(0.5); robot.leftSlide.setPower(-1 * 0.5);}
-            if (slideMoveUp > 0){robot.rightSlide.setPower(-1 * 0.5); robot.leftSlide.setPower(0.5);}
+            if (rollerOut) robot.roller.setPower(0.9);
+            else if (rollerIn) robot.roller.setPower(-1*0.9);
+            else robot.roller.setPower(0);
+
+            if (releases)robot.release.setPower(0.5);
+            else if (returns)robot.release.setPower(-1*0.5);
+            else robot.release.setPower(0);
+
+            if (rotateOut)robot.rollerRotate.setPower(0.5);
+            else if (rotateIn)robot.rollerRotate.setPower(-1*0.5);
+            else robot.rollerRotate.setPower(0);
+
+            if (intakeArmOut) robot.intakeArm.setPower(0.5);
+            else if (intakeArmIn)robot.intakeArm.setPower(-1 * 0.5);
+            else robot.intakeArm.setPower(0);
+
+            if (slideMoveDown > 0){
+                robot.rightSlide.setPower(slideMoveDown);
+                robot.leftSlide.setPower(slideMoveDown);
+            }
+            else if (slideMoveUp > 0){
+                robot.rightSlide.setPower(slideMoveUp);
+                robot.leftSlide.setPower(slideMoveUp);
+            }else{
+                robot.rightSlide.setPower(0);
+                robot.leftSlide.setPower(0);
+            }
 
 
             robot.leftFrontDrive.setPower(fl);
@@ -132,91 +160,6 @@ public class testTele extends LinearOpMode {
             robot.leftBackDrive.setPower(bl);
             robot.rightBackDrive.setPower(br);
 
-
-
-            //Slide Rotate
-
-//            if (slideRotatePos>0){
-//                robot.leftSlideRotate.setPower(0.5);
-//                robot.rightSlideRotate.setPower(0.5);
-//            }
-//            else if (slideRotateNeg > 0){
-//                robot.leftSlideRotate.setPower(0.5 * -1);
-//                robot.rightSlideRotate.setPower(0.5 * -1);
-//            }
-//            else{
-//                robot.leftSlideRotate.setPower(0);
-//                robot.rightSlideRotate.setPower(0);
-//            }
-
-            //Slides Out/In
-
-//            if (slideOut){
-//                robot.slides.setPower(0.4);
-//            }
-//            else if (slideIn){
-//                robot.slides.setPower(0.4 * -1);
-//            }
-//            else{
-//                robot.slides.setPower(0);
-//            }
-//
-//            //Rollers
-//
-//            if (rollers){
-//                robot.leftRoller.setPower(-1);
-//                robot.rightRoller.setPower(-1);
-//            }
-//            else{
-//                robot.leftRoller.setPower(0);
-//                robot.rightRoller.setPower(0);
-//            }
-
-            //Roller Arm
-
-//            if (rollerDown){
-//                robot.leftRollerArm.setPower(0.5);
-//                robot.rightRollerArm.setPower(0.5);
-//            }
-//            else if (rollerUp){
-//                robot.leftRollerArm.setPower(0.5 * -1);
-//                robot.rightRollerArm.setPower(0.5 * -1);
-//            }
-//            else{
-//                robot.leftRollerArm.setPower(0);
-//                robot.rightRollerArm.setPower(0);
-//            }
-//
-//            //Airplane Launching
-//
-//            if (launchPlane1 && launchPlane2){
-//                robot.airplaneLauncher.setPower(-0.5);
-//            }
-//            else{
-//                robot.airplaneLauncher.setPower(0.5);
-//            }
-
-
-            //Pixel Holding
-
-//            if (pixelHolding){
-//                robot.pixelHolder.setPosition(0);
-//            }
-//            else{
-//                robot.pixelHolder.setPosition(40);
-//            }
-//
-//
-//            //Hanging the Robot
-//            if (rotateHookPos){
-//                robot.hook.setPower(1);
-//            }
-//            else if (rotateHookNeg){
-//                robot.hook.setPower(-1);
-//            }
-//            else{
-//                robot.hook.setPower(0);
-//            }
 
             telemetry.addData("Status", "Run Time: " + runtime.toString());
             telemetry.update();

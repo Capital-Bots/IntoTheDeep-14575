@@ -65,6 +65,9 @@ public class testHardware {
     public DcMotor leftSlide        = null;
     public DcMotor rightSlide       = null;
     public DcMotor intakeArm        = null;
+    public CRServo roller           = null;
+    public CRServo rollerRotate     = null;
+    public CRServo release          = null;
 
     /**
      * Initialize all the robot's hardware.
@@ -82,7 +85,9 @@ public class testHardware {
         leftSlide = hwMap.get(DcMotor.class, "leftSlide");
         rightSlide= hwMap.get(DcMotor.class, "rightSlide");
         intakeArm = hwMap.get(DcMotor.class, "intakeArm");
-
+        roller = hwMap.get(CRServo.class, "roller");
+        rollerRotate = hwMap.get(CRServo.class, "rollerRotate");
+        release = hwMap.get(CRServo.class, "release");
 
 
         leftFrontDrive.setDirection(DcMotor.Direction.REVERSE);
