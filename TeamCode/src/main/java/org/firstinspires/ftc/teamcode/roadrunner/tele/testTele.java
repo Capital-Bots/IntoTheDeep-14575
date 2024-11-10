@@ -147,8 +147,8 @@ public class testTele extends LinearOpMode {
                 robot.leftSlide.setPower(slideMoveDown);
             }
             else if (slideMoveUp > 0){
-                robot.rightSlide.setPower(slideMoveUp);
-                robot.leftSlide.setPower(slideMoveUp);
+                robot.rightSlide.setPower(-1*slideMoveUp);
+                robot.leftSlide.setPower(-1*slideMoveUp);
             }else{
                 robot.rightSlide.setPower(0);
                 robot.leftSlide.setPower(0);
