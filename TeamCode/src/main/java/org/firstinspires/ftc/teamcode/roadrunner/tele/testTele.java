@@ -63,18 +63,15 @@ public class testTele extends LinearOpMode {
         runtime.reset();
 
         while (opModeIsActive()) {
-            double verticalComponent = -gamepad1.left_stick_y;
+            double verticalComponent = -1 * gamepad1.left_stick_y;
             double lateralComponent = gamepad1.left_stick_x;
             double turnComponent = gamepad1.right_stick_x;
-            double verticalComponent2 = -gamepad2.left_stick_y;
-            double lateralComponent2 = gamepad2.left_stick_x;
-            double turnComponent2 = gamepad2.right_stick_x;
-            double slideMoveUp = gamepad1.right_trigger;
-            double slideMoveDown = gamepad1.left_trigger;
-            boolean intakeArmOut = gamepad1.a;
-            boolean intakeArmIn = gamepad1.b;
-            boolean rollerIn = gamepad1.x;
-            boolean rollerOut = gamepad1.y;
+            double slideMoveUp = gamepad2.right_trigger;
+            double slideMoveDown = gamepad2.left_trigger;
+            boolean intakeArmOut = gamepad2.left_bumper;
+            boolean intakeArmIn = gamepad2.right_bumper;
+            boolean rollerIn = gamepad2.left_stick_button;
+            boolean rollerOut = gamepad2.right_stick_button;
             boolean rotateIn = gamepad2.a;
             boolean rotateOut = gamepad2.b;
             boolean releases = gamepad2.x;
@@ -94,10 +91,6 @@ public class testTele extends LinearOpMode {
             double fr = SPEED_MULTIPLIER * (verticalComponent - lateralComponent - turnComponent) / normalizingFactor;
             double bl = SPEED_MULTIPLIER * (verticalComponent - lateralComponent + turnComponent) / normalizingFactor;
             double br = SPEED_MULTIPLIER * (verticalComponent + lateralComponent - turnComponent) / normalizingFactor;
-            fl += 0.4 * (verticalComponent2 + lateralComponent2 + turnComponent2) / normalizingFactor;
-            fr += 0.4 * (verticalComponent2 - lateralComponent2 - turnComponent2) / normalizingFactor;
-            bl += 0.4 * (verticalComponent2 - lateralComponent2 + turnComponent2) / normalizingFactor;
-            br += 0.4 * (verticalComponent2 + lateralComponent2 - turnComponent2) / normalizingFactor;
 
             //Slow Movements - DPAD
 
@@ -126,22 +119,27 @@ public class testTele extends LinearOpMode {
                 br = 0.5;
             }
 
+            //Rotating the Roller Box
             if (rollerOut) robot.roller.setPower(0.9);
             else if (rollerIn) robot.roller.setPower(-1*0.9);
             else robot.roller.setPower(0);
 
+            //Release Mechanism
             if (releases)robot.release.setPower(0.5);
             else if (returns)robot.release.setPower(-1*0.5);
             else robot.release.setPower(0);
 
+            //Rollers
             if (rotateOut)robot.rollerRotate.setPower(0.5);
             else if (rotateIn)robot.rollerRotate.setPower(-1*0.5);
             else robot.rollerRotate.setPower(0);
 
+            //Intake Arm
             if (intakeArmOut) robot.intakeArm.setPower(0.5);
             else if (intakeArmIn)robot.intakeArm.setPower(-1 * 0.5);
             else robot.intakeArm.setPower(0);
 
+            //Slide Movements
             if (slideMoveDown > 0){
                 robot.rightSlide.setPower(slideMoveDown);
                 robot.leftSlide.setPower(slideMoveDown);
