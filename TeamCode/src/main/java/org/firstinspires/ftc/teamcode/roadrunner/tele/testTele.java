@@ -53,7 +53,6 @@ import org.firstinspires.ftc.teamcode.HardwareClasses.testHardware;
 
 public class testTele extends LinearOpMode {
 
-    // Declare OpMode members.
     private ElapsedTime runtime = new ElapsedTime();
     private testHardware robot = new testHardware();
 
@@ -64,30 +63,23 @@ public class testTele extends LinearOpMode {
         runtime.reset();
 
         while (opModeIsActive()) {
-            double verticalComponent = -gamepad1.left_stick_y;
+            double verticalComponent = -1 * gamepad1.left_stick_y;
             double lateralComponent = gamepad1.left_stick_x;
             double turnComponent = gamepad1.right_stick_x;
-            double verticalComponent2 = -gamepad2.left_stick_y;
-            double lateralComponent2 = gamepad2.left_stick_x;
-            double turnComponent2 = gamepad2.right_stick_x;
-            double slideRotatePos = gamepad2.left_trigger;
-            double slideRotateNeg = gamepad2.right_trigger;
-            boolean slideOut = gamepad2.left_bumper;
-            boolean slideIn = gamepad2.right_bumper;
-            boolean rollers = gamepad2.x;
-            boolean rollerDown = gamepad2.a;
-            boolean rollerUp = gamepad2.y;
-            boolean launchPlane1 = gamepad1.b;
-            boolean launchPlane2 = gamepad1.x;
-            boolean pixelHolding = gamepad2.b;
-            boolean rotateHookPos = gamepad1.y;
-            boolean rotateHookNeg = gamepad1.a;
+            double slideMoveUp = gamepad2.right_trigger;
+            double slideMoveDown = gamepad2.left_trigger;
+            boolean intakeArmOut = gamepad2.left_bumper;
+            boolean intakeArmIn = gamepad2.right_bumper;
+            boolean rollerIn = gamepad2.left_stick_button;
+            boolean rollerOut = gamepad2.right_stick_button;
+            boolean rotateIn = gamepad2.a;
+            boolean rotateOut = gamepad2.b;
+            boolean releases = gamepad2.x;
+            boolean returns = gamepad2.y;
             boolean slowFront = gamepad2.dpad_up;
             boolean slowBack = gamepad2.dpad_down;
             boolean slowLeft = gamepad2.dpad_left;
             boolean slowRight = gamepad2.dpad_right;
-            boolean autoOutToIn = gamepad2.left_stick_button;
-            boolean autoInToOut = gamepad2.right_stick_button;
 
             double SPEED_MULTIPLIER = 0.95;
 
@@ -99,10 +91,6 @@ public class testTele extends LinearOpMode {
             double fr = SPEED_MULTIPLIER * (verticalComponent - lateralComponent - turnComponent) / normalizingFactor;
             double bl = SPEED_MULTIPLIER * (verticalComponent - lateralComponent + turnComponent) / normalizingFactor;
             double br = SPEED_MULTIPLIER * (verticalComponent + lateralComponent - turnComponent) / normalizingFactor;
-            fl += 0.4 * (verticalComponent2 + lateralComponent2 + turnComponent2) / normalizingFactor;
-            fr += 0.4 * (verticalComponent2 - lateralComponent2 - turnComponent2) / normalizingFactor;
-            bl += 0.4 * (verticalComponent2 - lateralComponent2 + turnComponent2) / normalizingFactor;
-            br += 0.4 * (verticalComponent2 + lateralComponent2 - turnComponent2) / normalizingFactor;
 
             //Slow Movements - DPAD
 
@@ -131,96 +119,45 @@ public class testTele extends LinearOpMode {
                 br = 0.5;
             }
 
+            //Rotating the Roller Box
+            if (rollerOut) robot.roller.setPower(0.9);
+            else if (rollerIn) robot.roller.setPower(-1*0.9);
+            else robot.roller.setPower(0);
+
+            //Release Mechanism
+            if (releases)robot.release.setPower(0.5);
+            else if (returns)robot.release.setPower(-1*0.5);
+            else robot.release.setPower(0);
+
+            //Rollers
+            if (rotateOut)robot.rollerRotate.setPower(0.5);
+            else if (rotateIn)robot.rollerRotate.setPower(-1*0.5);
+            else robot.rollerRotate.setPower(0);
+
+            //Intake Arm
+            if (intakeArmOut) robot.intakeArm.setPower(0.5);
+            else if (intakeArmIn)robot.intakeArm.setPower(-1 * 0.5);
+            else robot.intakeArm.setPower(0);
+
+            //Slide Movements
+            if (slideMoveDown > 0){
+                robot.rightSlide.setPower(slideMoveDown);
+                robot.leftSlide.setPower(slideMoveDown);
+            }
+            else if (slideMoveUp > 0){
+                robot.rightSlide.setPower(-1*slideMoveUp);
+                robot.leftSlide.setPower(-1*slideMoveUp);
+            }else{
+                robot.rightSlide.setPower(0);
+                robot.leftSlide.setPower(0);
+            }
+
+
             robot.leftFrontDrive.setPower(fl);
             robot.rightFrontDrive.setPower(fr);
             robot.leftBackDrive.setPower(bl);
             robot.rightBackDrive.setPower(br);
 
-
-
-            //Slide Rotate
-
-//            if (slideRotatePos>0){
-//                robot.leftSlideRotate.setPower(0.5);
-//                robot.rightSlideRotate.setPower(0.5);
-//            }
-//            else if (slideRotateNeg > 0){
-//                robot.leftSlideRotate.setPower(0.5 * -1);
-//                robot.rightSlideRotate.setPower(0.5 * -1);
-//            }
-//            else{
-//                robot.leftSlideRotate.setPower(0);
-//                robot.rightSlideRotate.setPower(0);
-//            }
-
-            //Slides Out/In
-
-//            if (slideOut){
-//                robot.slides.setPower(0.4);
-//            }
-//            else if (slideIn){
-//                robot.slides.setPower(0.4 * -1);
-//            }
-//            else{
-//                robot.slides.setPower(0);
-//            }
-//
-//            //Rollers
-//
-//            if (rollers){
-//                robot.leftRoller.setPower(-1);
-//                robot.rightRoller.setPower(-1);
-//            }
-//            else{
-//                robot.leftRoller.setPower(0);
-//                robot.rightRoller.setPower(0);
-//            }
-
-            //Roller Arm
-
-//            if (rollerDown){
-//                robot.leftRollerArm.setPower(0.5);
-//                robot.rightRollerArm.setPower(0.5);
-//            }
-//            else if (rollerUp){
-//                robot.leftRollerArm.setPower(0.5 * -1);
-//                robot.rightRollerArm.setPower(0.5 * -1);
-//            }
-//            else{
-//                robot.leftRollerArm.setPower(0);
-//                robot.rightRollerArm.setPower(0);
-//            }
-//
-//            //Airplane Launching
-//
-//            if (launchPlane1 && launchPlane2){
-//                robot.airplaneLauncher.setPower(-0.5);
-//            }
-//            else{
-//                robot.airplaneLauncher.setPower(0.5);
-//            }
-
-
-            //Pixel Holding
-
-//            if (pixelHolding){
-//                robot.pixelHolder.setPosition(0);
-//            }
-//            else{
-//                robot.pixelHolder.setPosition(40);
-//            }
-//
-//
-//            //Hanging the Robot
-//            if (rotateHookPos){
-//                robot.hook.setPower(1);
-//            }
-//            else if (rotateHookNeg){
-//                robot.hook.setPower(-1);
-//            }
-//            else{
-//                robot.hook.setPower(0);
-//            }
 
             telemetry.addData("Status", "Run Time: " + runtime.toString());
             telemetry.update();
