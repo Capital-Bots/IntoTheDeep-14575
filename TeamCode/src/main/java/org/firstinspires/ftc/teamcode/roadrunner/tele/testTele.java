@@ -32,7 +32,6 @@ package org.firstinspires.ftc.teamcode.roadrunner.tele;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.util.ElapsedTime;
-
 import org.firstinspires.ftc.teamcode.HardwareClasses.testHardware;
 
 
@@ -58,9 +57,16 @@ public class testTele extends LinearOpMode {
 
     @Override
     public void runOpMode() throws InterruptedException {
+
         robot.init(hardwareMap);
         waitForStart();
         runtime.reset();
+
+        boolean lastButtonRotate = false;
+        boolean toggleSwitchRotate = false;
+        boolean lastButtonClaw = false;
+        boolean toggleSwitchClaw = false;
+        double output = 0;
 
         while (opModeIsActive()) {
             double verticalComponent = -1 * gamepad1.left_stick_y;
@@ -70,18 +76,21 @@ public class testTele extends LinearOpMode {
             double slideMoveDown = gamepad2.left_trigger;
             boolean intakeArmOut = gamepad2.left_bumper;
             boolean intakeArmIn = gamepad2.right_bumper;
-            boolean rollerIn = gamepad2.left_stick_button;
-            boolean rollerOut = gamepad2.right_stick_button;
+            boolean rollerOut = gamepad2.b;
             boolean rotateIn = gamepad2.a;
-            boolean rotateOut = gamepad2.b;
             boolean releases = gamepad2.x;
-            boolean returns = gamepad2.y;
             boolean slowFront = gamepad2.dpad_up;
             boolean slowBack = gamepad2.dpad_down;
             boolean slowLeft = gamepad2.dpad_left;
             boolean slowRight = gamepad2.dpad_right;
+            boolean slowFront1 = gamepad1.dpad_up;
+            boolean slowBack1 = gamepad1.dpad_down;
+            boolean slowLeft1 = gamepad1.dpad_left;
+            boolean slowRight1 = gamepad1.dpad_right;
+            double slowRotateLeft = gamepad1.left_trigger;
+            double slowRotateRight = gamepad1.right_trigger;
 
-            double SPEED_MULTIPLIER = 0.95;
+            double SPEED_MULTIPLIER = 0.9;
 
 
             double normalizingFactor = Math.max(Math.abs(verticalComponent)
@@ -94,72 +103,100 @@ public class testTele extends LinearOpMode {
 
             //Slow Movements - DPAD
 
-            if (slowFront){
+            if (slowFront || slowFront1) {
                 fl = 0.35;
                 fr = 0.35;
                 bl = 0.35;
                 br = 0.35;
-            }
-            else if (slowBack){
+            } else if (slowBack || slowBack1) {
                 fl = 0.35 * -1;
                 fr = 0.35 * -1;
                 bl = 0.35 * -1;
                 br = 0.35 * -1;
-            }
-            else if (slowLeft){
+            } else if (slowLeft || slowLeft1) {
                 fl = -1 * 0.5;
                 fr = 0.5;
                 bl = 0.5;
                 br = -1 * 0.5;
-            }
-            else if (slowRight){
+            } else if (slowRight || slowRight1) {
                 fl = 0.5;
                 fr = -1 * 0.5;
-                bl = -1*0.5;
+                bl = -1 * 0.5;
                 br = 0.5;
             }
 
-            //Rotating the Roller Box
-            if (rollerOut) robot.roller.setPower(0.9);
-            else if (rollerIn) robot.roller.setPower(-1*0.9);
-            else robot.roller.setPower(0);
+            if (slowRotateLeft > 0){
+                fl = -0.3;
+                fr = 0.3;
+                bl = -0.3;
+                br = 0.3;
+            }if (slowRotateRight > 0){
+                fl = 0.3;
+                fr = -0.3;
+                bl = 0.3;
+                br = -0.3;
+            }
+
+            //Claw
+            if (rollerOut && !lastButtonClaw){
+                if (toggleSwitchClaw){
+                    output = 1;
+                    robot.roller.setPosition(1);
+                    toggleSwitchClaw = false;
+                }
+                else{
+                    output = 2;
+                    robot.roller.setPosition(0);
+                    toggleSwitchClaw = true;
+                }
+                lastButtonClaw = true;
+            }if (!rollerOut) lastButtonClaw = false;
 
             //Release Mechanism
-            if (releases)robot.release.setPower(0.5);
-            else if (returns)robot.release.setPower(-1*0.5);
-            else robot.release.setPower(0);
+            if (releases) robot.release.setPosition(1);
+            else robot.release.setPosition(0.15);
 
-            //Rollers
-            if (rotateOut)robot.rollerRotate.setPower(0.5);
-            else if (rotateIn)robot.rollerRotate.setPower(-1*0.5);
-            else robot.rollerRotate.setPower(0);
+            if (rotateIn && !lastButtonRotate) {
+                if (toggleSwitchRotate){
+                    robot.rollerRotate.setPosition(0);
+                    toggleSwitchRotate = false;
+                }
+                else{
+                    robot.rollerRotate.setPosition(1);
+                    toggleSwitchRotate = true;
+                }
+                lastButtonRotate = true;
+            }if (!rotateIn) lastButtonRotate = false;
+
 
             //Intake Arm
-            if (intakeArmOut) robot.intakeArm.setPower(0.5);
-            else if (intakeArmIn)robot.intakeArm.setPower(-1 * 0.5);
+            if (intakeArmOut) robot.intakeArm.setPower(-0.3);
+            else if (intakeArmIn) robot.intakeArm.setPower(0.3);
             else robot.intakeArm.setPower(0);
 
             //Slide Movements
-            if (slideMoveDown > 0){
-                robot.rightSlide.setPower(slideMoveDown);
+            if (slideMoveDown > 0) {
+                robot.rightSlide.setPower(slideMoveDown * 0.95);
                 robot.leftSlide.setPower(slideMoveDown);
-            }
-            else if (slideMoveUp > 0){
-                robot.rightSlide.setPower(-1*slideMoveUp);
-                robot.leftSlide.setPower(-1*slideMoveUp);
-            }else{
+            } else if (slideMoveUp > 0) {
+                robot.rightSlide.setPower(-0.95 * slideMoveUp);
+                robot.leftSlide.setPower(-1 * slideMoveUp);
+            } else {
                 robot.rightSlide.setPower(0);
                 robot.leftSlide.setPower(0);
             }
-
 
             robot.leftFrontDrive.setPower(fl);
             robot.rightFrontDrive.setPower(fr);
             robot.leftBackDrive.setPower(bl);
             robot.rightBackDrive.setPower(br);
 
-
             telemetry.addData("Status", "Run Time: " + runtime.toString());
+            telemetry.addData("Left Bumper", intakeArmOut);
+            telemetry.addData("Right Bumper", intakeArmIn);
+            telemetry.addData("output", output);
+            telemetry.addData("lastButtonClaw", lastButtonClaw);
+            telemetry.addData("lastPressedClaw",toggleSwitchClaw);
             telemetry.update();
         }
     }
