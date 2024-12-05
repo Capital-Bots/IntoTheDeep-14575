@@ -63,12 +63,14 @@ public class testTele extends LinearOpMode {
         runtime.reset();
 
         boolean lastButtonRotate = false;
-        boolean toggleSwitchRotate = false;
-        boolean lastButtonClaw = false;
-        boolean toggleSwitchClaw = false;
-        double output = 0;
+        boolean toggleRotate = false;
+        boolean lastButtonForClaw = false;
+        boolean toggleClaw = false;
 
         while (opModeIsActive()) {
+
+            // Variable Declarations
+
             double verticalComponent = -1 * gamepad1.left_stick_y;
             double lateralComponent = gamepad1.left_stick_x;
             double turnComponent = gamepad1.right_stick_x;
@@ -76,8 +78,9 @@ public class testTele extends LinearOpMode {
             double slideMoveDown = gamepad2.left_trigger;
             boolean intakeArmOut = gamepad2.left_bumper;
             boolean intakeArmIn = gamepad2.right_bumper;
-            boolean rollerOut = gamepad2.b;
-            boolean rotateIn = gamepad2.a;
+            boolean claw = gamepad2.a;
+            boolean driverClaw = gamepad1.a;
+            boolean rotateClaw = gamepad2.b;
             boolean releases = gamepad2.x;
             boolean slowFront = gamepad2.dpad_up;
             boolean slowBack = gamepad2.dpad_down;
@@ -92,7 +95,7 @@ public class testTele extends LinearOpMode {
 
             double SPEED_MULTIPLIER = 0.9;
 
-
+            //Drivetrain Movements
             double normalizingFactor = Math.max(Math.abs(verticalComponent)
                     + Math.abs(lateralComponent) + Math.abs(turnComponent), 1);
 
@@ -101,7 +104,7 @@ public class testTele extends LinearOpMode {
             double bl = SPEED_MULTIPLIER * (verticalComponent - lateralComponent + turnComponent) / normalizingFactor;
             double br = SPEED_MULTIPLIER * (verticalComponent + lateralComponent - turnComponent) / normalizingFactor;
 
-            //Slow Movements - DPAD
+            //Slow Movements - DPAD - for both driver and gunner
 
             if (slowFront || slowFront1) {
                 fl = 0.35;
@@ -125,6 +128,8 @@ public class testTele extends LinearOpMode {
                 br = 0.5;
             }
 
+            //Slow Rotation - for driver only
+
             if (slowRotateLeft > 0){
                 fl = -0.3;
                 fr = 0.3;
@@ -137,44 +142,47 @@ public class testTele extends LinearOpMode {
                 br = -0.3;
             }
 
-            //Claw
-            if (rollerOut && !lastButtonClaw){
-                if (toggleSwitchClaw){
-                    output = 1;
-                    robot.roller.setPosition(1);
-                    toggleSwitchClaw = false;
+            //Claw, with toggle
+
+            if ((claw || driverClaw) && !lastButtonForClaw){
+                if (toggleClaw){
+                    robot.claw.setPosition(1);
+                    toggleClaw = false;
                 }
                 else{
-                    output = 2;
-                    robot.roller.setPosition(0);
-                    toggleSwitchClaw = true;
+                    robot.claw.setPosition(0);
+                    toggleClaw = true;
                 }
-                lastButtonClaw = true;
-            }if (!rollerOut) lastButtonClaw = false;
+                lastButtonForClaw = true;
+            }if (!(claw||driverClaw)) lastButtonForClaw = false;
 
-            //Release Mechanism
+            //Release Mechanism, hold and release
+
             if (releases) robot.release.setPosition(1);
             else robot.release.setPosition(0.15);
 
-            if (rotateIn && !lastButtonRotate) {
-                if (toggleSwitchRotate){
-                    robot.rollerRotate.setPosition(0);
-                    toggleSwitchRotate = false;
+            //Claw Rotation, with toggle
+
+            if (rotateClaw && !lastButtonRotate) {
+                if (toggleRotate){
+                    robot.clawRotate.setPosition(0);
+                    toggleRotate = false;
                 }
                 else{
-                    robot.rollerRotate.setPosition(1);
-                    toggleSwitchRotate = true;
+                    robot.clawRotate.setPosition(1);
+                    toggleRotate = true;
                 }
                 lastButtonRotate = true;
-            }if (!rotateIn) lastButtonRotate = false;
-
+            }if (!rotateClaw) lastButtonRotate = false;
 
             //Intake Arm
+
             if (intakeArmOut) robot.intakeArm.setPower(-0.3);
             else if (intakeArmIn) robot.intakeArm.setPower(0.3);
             else robot.intakeArm.setPower(0);
 
             //Slide Movements
+
             if (slideMoveDown > 0) {
                 robot.rightSlide.setPower(slideMoveDown * 0.95);
                 robot.leftSlide.setPower(slideMoveDown);
@@ -186,6 +194,8 @@ public class testTele extends LinearOpMode {
                 robot.leftSlide.setPower(0);
             }
 
+            //Power assignments for Drivetrain (after all processing)
+
             robot.leftFrontDrive.setPower(fl);
             robot.rightFrontDrive.setPower(fr);
             robot.leftBackDrive.setPower(bl);
@@ -194,9 +204,8 @@ public class testTele extends LinearOpMode {
             telemetry.addData("Status", "Run Time: " + runtime.toString());
             telemetry.addData("Left Bumper", intakeArmOut);
             telemetry.addData("Right Bumper", intakeArmIn);
-            telemetry.addData("output", output);
-            telemetry.addData("lastButtonClaw", lastButtonClaw);
-            telemetry.addData("lastPressedClaw",toggleSwitchClaw);
+            telemetry.addData("lastButtonForClaw", lastButtonForClaw);
+            telemetry.addData("lastPressedClaw",toggleClaw);
             telemetry.update();
         }
     }

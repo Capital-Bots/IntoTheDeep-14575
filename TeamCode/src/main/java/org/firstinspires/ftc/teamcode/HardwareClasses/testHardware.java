@@ -29,9 +29,7 @@
 
 package org.firstinspires.ftc.teamcode.HardwareClasses;
 
-import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 
@@ -56,8 +54,7 @@ import com.qualcomm.robotcore.hardware.Servo;
 
 public class testHardware {
 
-    private HardwareMap hwMap = null;
-
+    private HardwareMap hwMap       = null;
     public DcMotor leftFrontDrive   = null;
     public DcMotor rightFrontDrive  = null;
     public DcMotor leftBackDrive    = null;
@@ -65,8 +62,8 @@ public class testHardware {
     public DcMotor leftSlide        = null;
     public DcMotor rightSlide       = null;
     public DcMotor intakeArm        = null;
-    public Servo roller             = null;
-    public Servo rollerRotate       = null;
+    public Servo claw               = null;
+    public Servo clawRotate          = null;
     public Servo release            = null;
 
     /**
@@ -85,8 +82,8 @@ public class testHardware {
         leftSlide = hwMap.get(DcMotor.class, "leftSlide");
         rightSlide= hwMap.get(DcMotor.class, "rightSlide");
         intakeArm = hwMap.get(DcMotor.class, "intakeArm");
-        roller = hwMap.get(Servo.class, "roller");
-        rollerRotate = hwMap.get(Servo.class, "rollerRotate");
+        claw = hwMap.get(Servo.class, "roller");
+        clawRotate = hwMap.get(Servo.class, "rollerRotate");
         release = hwMap.get(Servo.class, "release");
 
         leftFrontDrive.setDirection(DcMotor.Direction.REVERSE);
@@ -95,8 +92,6 @@ public class testHardware {
         rightBackDrive.setDirection(DcMotor.Direction.FORWARD);
         rightSlide.setDirection(DcMotor.Direction.REVERSE);
 
-
-
         leftFrontDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         leftBackDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         rightFrontDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
@@ -104,10 +99,6 @@ public class testHardware {
         leftSlide.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         rightSlide.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         intakeArm.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-
-
-
-
 
     }
 
