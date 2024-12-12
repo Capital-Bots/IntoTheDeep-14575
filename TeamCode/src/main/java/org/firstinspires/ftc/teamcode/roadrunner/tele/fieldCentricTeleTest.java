@@ -8,7 +8,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.teamcode.HardwareClasses.testHardware;
 import org.firstinspires.ftc.teamcode.MecanumDrive;
-@TeleOp(group = "drive", name = "compTele")
+@TeleOp(group = "Linear Opmode", name = "compTele")
 public class fieldCentricTeleTest extends LinearOpMode {
 //     double forwardHeading = Math.toRadians(180);
     private final testHardware robot = new testHardware();
@@ -24,6 +24,9 @@ public class fieldCentricTeleTest extends LinearOpMode {
         boolean lastButtonForClaw = false;
         boolean toggleClaw = false;
 
+        robot.claw.setPosition(1);
+        robot.clawRotate.setPosition(1);
+
         if (isStopRequested()) return;
         while (opModeIsActive() && !isStopRequested()) {
 
@@ -32,6 +35,7 @@ public class fieldCentricTeleTest extends LinearOpMode {
                     gamepad1.left_stick_x,
                     gamepad1.left_stick_y
             );
+
             // Then, rotate that vector by the inverse of that heading
             double robotHeading = drive.pose.heading.toDouble();
             double xComp = input.x;
@@ -41,6 +45,7 @@ public class fieldCentricTeleTest extends LinearOpMode {
             inputHeading -= robotHeading;
             isResetRequested = gamepad1.y;
 
+            //Declare the final outputs and push them to the power variables for the motors
             double finalX = inputMagnitude * Math.cos(inputHeading);
             double finalY = inputMagnitude * Math.sin(inputHeading);
             double turnComponent = gamepad1.right_stick_x;
@@ -75,7 +80,6 @@ public class fieldCentricTeleTest extends LinearOpMode {
             boolean slowBack1 = gamepad1.dpad_down;
             boolean slowLeft1 = gamepad1.dpad_left;
             boolean slowRight1 = gamepad1.dpad_right;
-            boolean gunnerAuto = gamepad2.y;
             double slowRotateLeft = gamepad1.left_trigger;
             double slowRotateRight = gamepad1.right_trigger;
 
@@ -131,8 +135,6 @@ public class fieldCentricTeleTest extends LinearOpMode {
                 }
                 lastButtonForClaw = true;
             }if (!(claw||driverClaw)) lastButtonForClaw = false;
-
-            //Driver's Claw Automation
 
             //Release Mechanism, hold and release
 
