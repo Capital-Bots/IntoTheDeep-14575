@@ -41,8 +41,7 @@ public class MyClass {
 //                .strafeTo(basketPos)
 //                .turn(Math.toRadians(-45))
                 //drop sample
-                .turn(Math.toRadians(90))
-                .strafeTo(new Vector2d(-22, 0))
+                .splineToLinearHeading(new Pose2d(-22, 0, Math.toRadians(-180)), Math.PI/2)
                 .build());
 
         meepMeep.setBackground(MeepMeep.Background.FIELD_INTO_THE_DEEP_OFFICIAL)
