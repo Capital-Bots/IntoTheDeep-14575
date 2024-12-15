@@ -63,7 +63,7 @@ public class testHardware {
     public DcMotor rightSlide       = null;
     public DcMotor intakeArm        = null;
     public Servo claw               = null;
-    public Servo clawRotate          = null;
+    public Servo clawRotate         = null;
     public Servo release            = null;
 
     /**

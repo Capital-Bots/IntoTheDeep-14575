@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode.roadrunner.tele;
 
+import com.acmerobotics.dashboard.FtcDashboard;
+import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.acmerobotics.roadrunner.Pose2d;
 import com.acmerobotics.roadrunner.Vector2d;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
@@ -23,6 +25,12 @@ public class fieldCentricTeleTest extends LinearOpMode {
         boolean toggleRotate = false;
         boolean lastButtonForClaw = false;
         boolean toggleClaw = false;
+
+        FtcDashboard dashboard = FtcDashboard.getInstance();
+        telemetry = new MultipleTelemetry(telemetry, dashboard.getTelemetry());
+
+        robot.claw.setPosition(0);
+        robot.clawRotate.setPosition(1);
 
         if (isStopRequested()) return;
         while (opModeIsActive() && !isStopRequested()) {
@@ -180,6 +188,8 @@ public class fieldCentricTeleTest extends LinearOpMode {
             telemetry.addData("input heading", inputHeading);
             telemetry.addData("x-comp", input.x);
             telemetry.addData("y-comp", input.y);
+            telemetry.addData("Right slide current position: ", robot.rightSlide.getCurrentPosition());
+
             telemetry.update();
 
 
