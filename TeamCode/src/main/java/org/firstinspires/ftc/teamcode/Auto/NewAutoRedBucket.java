@@ -6,10 +6,13 @@ import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.acmerobotics.roadrunner.Action;
+import com.acmerobotics.roadrunner.AngularVelConstraint;
+import com.acmerobotics.roadrunner.MinVelConstraint;
 import com.acmerobotics.roadrunner.Pose2d;
 import com.acmerobotics.roadrunner.SequentialAction;
 import com.acmerobotics.roadrunner.Trajectory;
 import com.acmerobotics.roadrunner.TrajectoryActionBuilder;
+import com.acmerobotics.roadrunner.TranslationalVelConstraint;
 import com.acmerobotics.roadrunner.ftc.Actions;
 import com.acmerobotics.roadrunner.ftc.Encoder;
 import com.acmerobotics.roadrunner.ftc.OverflowEncoder;
@@ -27,6 +30,8 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
+import java.util.Arrays;
+
 @Autonomous(name="RedBucketAuto", group="RedSide")
 public class NewAutoRedBucket extends LinearOpMode {
     public class Lift {
@@ -39,15 +44,15 @@ public class NewAutoRedBucket extends LinearOpMode {
             lift.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
             lift2.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
             lift.setDirection(DcMotorSimple.Direction.FORWARD);
-            lift2.setDirection(DcMotorSimple.Direction.FORWARD);
+            lift2.setDirection(DcMotorSimple.Direction.REVERSE);
         }
         public class LiftUp implements Action {
             private boolean initialized = false;
             @Override
             public boolean run(@NonNull TelemetryPacket packet) {
                 if (!initialized) {
-                    lift.setPower(-1);
-                    lift2.setPower(-1);
+                    lift.setPower(1);
+                    lift2.setPower(1);
                     initialized = true;
                 }
                 double pos = lift.getCurrentPosition();
@@ -56,6 +61,7 @@ public class NewAutoRedBucket extends LinearOpMode {
                     return true;
                 } else {
                     lift.setPower(0);
+                    lift2.setPower(0);
                     return false;
                 }
             }
@@ -63,12 +69,14 @@ public class NewAutoRedBucket extends LinearOpMode {
         public Action liftUp() {
             return new LiftUp();
         }
+
         public class LiftDown implements Action {
             private boolean initialized = false;
             @Override
             public boolean run(@NonNull TelemetryPacket packet) {
                 if (!initialized) {
-                    lift.setPower(-0.8);
+                    lift.setPower(-1);
+                    lift2.setPower(-1);
                     initialized = true;
                 }
                 double pos = lift.getCurrentPosition();
@@ -95,11 +103,11 @@ public class NewAutoRedBucket extends LinearOpMode {
         robot.init(hardwareMap);
         Lift lift = new Lift(hardwareMap);
         Vector2d basketPos = new Vector2d(-56, -60);
-        double slideInitPos = robot.rightSlide.getCurrentPosition();
+
+        waitForStart();
         robot.clawRotate.setPosition(1);
         robot.claw.setPosition(0);
-        waitForStart();
-
+        double slideInitPos = robot.rightSlide.getCurrentPosition();
 
         FtcDashboard dashboard = FtcDashboard.getInstance();
         telemetry = new MultipleTelemetry(telemetry, dashboard.getTelemetry());
@@ -114,13 +122,23 @@ public class NewAutoRedBucket extends LinearOpMode {
                     .waitSeconds(0.5)
                     .strafeTo(basketPos)
                     .waitSeconds(0.5);
-            TrajectoryActionBuilder action2 = drive.actionBuilder(drive.pose)
+            TrajectoryActionBuilder action2 = action.endTrajectory().fresh()
                     .waitSeconds(1)
-                    .strafeToLinearHeading(new Vector2d(-60, -64), Math.toRadians(45));
-            TrajectoryActionBuilder action3 = drive.actionBuilder(drive.pose)
-                    .strafeToLinearHeading(new Vector2d(-45, -50), Math.toRadians(90));
+                    .strafeTo(new Vector2d(-55,-62), new MinVelConstraint(Arrays.asList(
+                            new TranslationalVelConstraint(9),
+                            new AngularVelConstraint(Math.PI / 2)
+                    )));
+            TrajectoryActionBuilder midAction = action2.endTrajectory().fresh()
+                    .strafeTo(basketPos);
+            TrajectoryActionBuilder action3 = midAction.endTrajectory().fresh()
+                    .strafeToLinearHeading(new Vector2d(-42, -51), Math.toRadians(90));
             TrajectoryActionBuilder waitingAction = drive.actionBuilder(drive.pose)
                     .waitSeconds(0.5);
+            TrajectoryActionBuilder action4 = action3.endTrajectory().fresh()
+                    .strafeTo(basketPos)
+                    .waitSeconds(0.5);
+            TrajectoryActionBuilder action5 = action4.endTrajectory().fresh()
+                    .strafeTo(new Vector2d(-55,-63));
             //drop preload
 //                    .turn(Math.toRadians(45))
 //                    .strafeTo(new Vector2d(-48.5, -32)) //grab first sample
@@ -142,7 +160,11 @@ public class NewAutoRedBucket extends LinearOpMode {
 ////                .turn(Math.toRadians(-45))
 //                    //drop sample
 //                    .splineToLinearHeading(new Pose2d(-22, 0, Math.toRadians(-180)), Math.PI/2);
-            Actions.runBlocking(new SequentialAction(action.build(), lift.liftUp()));
+            lift.lift.setPower(.65);
+            lift.lift2.setPower(.65);
+            Actions.runBlocking(new SequentialAction(action.build(), action2.build()));
+            lift.lift.setPower(0);
+            lift.lift2.setPower(0);
 //            while (robot.rightSlide.getCurrentPosition() > (slideInitPos - 11594)) {
 //                robot.rightSlide.setPower(-1);
 //                robot.leftSlide.setPower(-1);
@@ -150,56 +172,51 @@ public class NewAutoRedBucket extends LinearOpMode {
 //            robot.rightSlide.setPower(0);
 //            robot.leftSlide.setPower(0);
 
-            Actions.runBlocking(action2.build());
 
             Servo release = hardwareMap.get(Servo.class, "release");
             robot.release.setPosition(0.999);
-
-            Thread.sleep(500);
-
-            Actions.runBlocking(new SequentialAction(action3.build(), waitingAction.build()));
-
+            sleep(500);
+            Actions.runBlocking(midAction.build());
+            lift.lift.setPower(-1);
+            lift.lift2.setPower(-1);
+            Actions.runBlocking(new SequentialAction(waitingAction.build(), action3.build(), waitingAction.build()));
             double i = runtime.milliseconds();
-            while (runtime.milliseconds() < i + 250) robot.intakeArm.setPower(0.5);
+            while (runtime.milliseconds() < i + 425) robot.intakeArm.setPower(0.5);
             robot.intakeArm.setPower(0);
+            sleep(750);
+            robot.claw.setPosition(0.8);
+            robot.release.setPosition(0.15);
+            sleep(750);
+            robot.clawRotate.setPosition(0);
+            sleep(750);
 
-            double g = runtime.milliseconds();
-            double gaver;
-            while (getRuntime() - g < 0.5) {
-                gaver = 0;
-            }
-            double j = runtime.milliseconds();
-            while (runtime.milliseconds() < j + 250) robot.claw.setPosition(1);
+            double f = runtime.milliseconds();
+            while (runtime.milliseconds() < f + 1000) robot.intakeArm.setPower(-0.5);
 
-            double d = runtime.milliseconds();
-            double daver;
-            while (getRuntime() - d < 0.5) {
-                daver = 0;
-            }
-            double k = runtime.milliseconds();
-            while (runtime.milliseconds() < k + 250) robot.clawRotate.setPosition(1);
-
-            double r = runtime.milliseconds();
-            double raver;
-            while (getRuntime() - r < 0.5) {
-                raver = 0;
-            }
-            double v = runtime.milliseconds();
-            while (runtime.milliseconds() < v + 250) robot.intakeArm.setPower(-0.3);
+            robot.claw.setPosition(0);
             robot.intakeArm.setPower(0);
-
-            double w = runtime.milliseconds();
-            double waver;
-            while (getRuntime() - w < 0.5) {
-                waver = 0;
-            }
-            double u = runtime.milliseconds();
-            while (robot.rightSlide.getCurrentPosition() != slideInitPos) {
-                robot.leftSlide.setPower(1);
-                robot.rightSlide.setPower(1);
-            }
-
+            sleep(500);
+            robot.clawRotate.setPosition(1);
+            sleep(500);
+            lift.lift.setPower(1);
+            lift.lift2.setPower(1);
+            Actions.runBlocking(action4.build());
+            sleep(1000);
+            robot.rightFrontDrive.setPower(-0.4);
+            robot.rightBackDrive.setPower(-0.4);
+            sleep(1000);
+            robot.rightFrontDrive.setPower(0);
+            robot.rightBackDrive.setPower(0);
+            robot.leftSlide.setPower(0);
+            robot.rightSlide.setPower(0);
+            sleep(200);
+            robot.release.setPosition(1);
+            sleep(1000);
+            robot.rightFrontDrive.setPower(0.5);
+            robot.leftFrontDrive.setPower(0.5);
+            robot.rightBackDrive.setPower(0.5);
+            robot.leftBackDrive.setPower(0.5);
+            sleep(1000);
         }
-
     }
 }

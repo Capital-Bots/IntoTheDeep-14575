@@ -163,8 +163,8 @@ public class fieldCentricTeleTest extends LinearOpMode {
 
             //Intake Arm
 
-            if (intakeArmOut) robot.intakeArm.setPower(-0.3);
-            else if (intakeArmIn) robot.intakeArm.setPower(0.3);
+            if (intakeArmOut) robot.intakeArm.setPower(-0.65);
+            else if (intakeArmIn) robot.intakeArm.setPower(0.65);
             else robot.intakeArm.setPower(0);
 
             //Slide Movements
