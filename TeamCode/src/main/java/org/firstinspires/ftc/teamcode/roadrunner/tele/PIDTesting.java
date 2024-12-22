@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.roadrunner.tele;
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -8,7 +9,7 @@ import com.arcrobotics.ftclib.controller.PIDFController;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.HardwareClasses.testHardware;
-
+@Disabled
 @TeleOp(name="PIDTesting", group="Linear Opmode")
 public class PIDTesting extends LinearOpMode{
     private testHardware robot = new testHardware();
