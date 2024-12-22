@@ -10,7 +10,10 @@ public class MyClass {
     public static void main(String[] args) {
         MeepMeep meepMeep = new MeepMeep(800);
         Vector2d basketPos = new Vector2d(-56, -56);
-        Vector2d otherBasketPos = new Vector2d(56, 56);
+        Vector2d releasePos = new Vector2d(-58,-58);
+        Vector2d firstPiecePos = new Vector2d(-48.5,-33.25);
+        Vector2d secondPiecePos = new Vector2d(-57,-33.25);
+//        Vector2d thirdPiecePos = new Vector2d()
         RoadRunnerBotEntity myBot = new DefaultBotBuilder(meepMeep)
                 // Set bot constraints: maxVel, maxAccel, maxAngVel, maxAngAccel, track width
                 .setColorScheme(new ColorSchemeRedLight())
@@ -20,30 +23,40 @@ public class MyClass {
                 .build();
         myBot.runAction(myBot.getDrive().actionBuilder(new Pose2d(-34, -63, Math.toRadians(90)))
                 .strafeTo(basketPos)
+                .waitSeconds(1)
                 .turn(Math.toRadians(-45))
-                //drop preload
-                .turn(Math.toRadians(45))
-                .strafeTo(new Vector2d(-48.5, -32)) //grab first sample
+                .waitSeconds(1)
+                .strafeTo(releasePos)
+                .waitSeconds(1)
+                //release preload
                 .strafeTo(basketPos)
-                .turn(Math.toRadians(-45))
+                .waitSeconds(1)
+                .strafeToSplineHeading(firstPiecePos, Math.toRadians(90)) //grab first sample
+                .waitSeconds(1)
+                .strafeToSplineHeading(basketPos, Math.toRadians(45))
+                .waitSeconds(1)
+                .strafeToSplineHeading(releasePos, Math.toRadians(45))
+                .waitSeconds(1)
+                .strafeToSplineHeading(basketPos, Math.toRadians(45))
+                .waitSeconds(1)
+                .strafeToSplineHeading(secondPiecePos, Math.toRadians(90))
+                .waitSeconds(1)
                 //drop sample
-                .turn(Math.toRadians(45))
-                .strafeTo(new Vector2d(-57, -32))
-                .strafeTo(basketPos)
-                .turn(Math.toRadians(-45))
+                .strafeToSplineHeading(basketPos, Math.toRadians(45))
+                .waitSeconds(1)
+                .strafeToSplineHeading(releasePos, Math.toRadians(45))
+                .waitSeconds(1)
+                .strafeToSplineHeading(basketPos, Math.toRadians(45))
+                .waitSeconds(1)
                 //drop sample
-                .turn(Math.toRadians(45))
 //                THIRD SAMPLE
-//                .lineToY(-26)
-//                .turn(Math.toRadians(90))
-//                .lineToX(-60)
-//                .turn(Math.toRadians(-90))
-//                .strafeTo(basketPos)
-//                .turn(Math.toRadians(-45))
-                //drop sample
-                .splineToLinearHeading(new Pose2d(-22, 0, Math.toRadians(-180)), Math.PI/2)
+                .splineToLinearHeading(new Pose2d(-55, -36, Math.toRadians(90)), Math.PI/2)
+                .waitSeconds(1)
+                .splineToLinearHeading(new Pose2d(-34, -9, Math.toRadians(90)), Math.PI/2)
+                .waitSeconds(1)
+                .splineToLinearHeading(new Pose2d(-25, -12, Math.toRadians(90)), Math.PI/2)
+                .waitSeconds(1)
                 .build());
-
         meepMeep.setBackground(MeepMeep.Background.FIELD_INTO_THE_DEEP_OFFICIAL)
                 .setDarkMode(false)
                 .setBackgroundAlpha(0.95f)
