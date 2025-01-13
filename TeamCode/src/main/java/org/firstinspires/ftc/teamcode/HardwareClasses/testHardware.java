@@ -29,7 +29,9 @@
 
 package org.firstinspires.ftc.teamcode.HardwareClasses;
 
+import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 
@@ -65,6 +67,8 @@ public class testHardware {
     public Servo claw               = null;
     public Servo clawRotate         = null;
     public Servo release            = null;
+    public CRServo leftRoller       = null;
+    public CRServo rightRoller      = null;
 
     /**
      * Initialize all the robot's hardware.
@@ -85,12 +89,15 @@ public class testHardware {
         claw = hwMap.get(Servo.class, "roller");
         clawRotate = hwMap.get(Servo.class, "rollerRotate");
         release = hwMap.get(Servo.class, "release");
+        leftRoller = hwMap.get(CRServo.class, "leftRoller");
+        rightRoller = hwMap.get(CRServo.class, "rightRoller");
 
         leftFrontDrive.setDirection(DcMotor.Direction.REVERSE);
         leftBackDrive.setDirection(DcMotor.Direction.REVERSE);
         rightFrontDrive.setDirection(DcMotor.Direction.FORWARD);
         rightBackDrive.setDirection(DcMotor.Direction.FORWARD);
         rightSlide.setDirection(DcMotor.Direction.REVERSE);
+        leftRoller.setDirection(DcMotorSimple.Direction.REVERSE);
 
         leftFrontDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         leftBackDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);

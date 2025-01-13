@@ -52,7 +52,7 @@ public class fieldCentricTeleTest extends LinearOpMode {
             double finalX = inputMagnitude * Math.cos(inputHeading);
             double finalY = inputMagnitude * Math.sin(inputHeading);
             double turnComponent = gamepad1.right_stick_x;
-            double SPEED_MULTIPLIER = 0.7;
+            double SPEED_MULTIPLIER = 0.92;
             double normalizingFactor = Math.max(Math.abs(finalY)
                     + Math.abs(finalX) + Math.abs(turnComponent), 1);
 
@@ -138,7 +138,7 @@ public class fieldCentricTeleTest extends LinearOpMode {
                     toggleClaw = true;
                 }
                 lastButtonForClaw = true;
-            }if (!(claw||driverClaw)) lastButtonForClaw = false;
+            }if (!(claw||driverClaw)) lastButtonForClaw =  false;
 
             //Driver's Claw Automation
 
@@ -155,7 +155,7 @@ public class fieldCentricTeleTest extends LinearOpMode {
                     toggleRotate = false;
                 }
                 else{
-                    robot.clawRotate.setPosition(1);
+                    robot.clawRotate.setPosition(0.5);
                     toggleRotate = true;
                 }
                 lastButtonRotate = true;
