@@ -29,8 +29,6 @@ public class fieldCentricTeleTest extends LinearOpMode {
         FtcDashboard dashboard = FtcDashboard.getInstance();
         telemetry = new MultipleTelemetry(telemetry, dashboard.getTelemetry());
 
-        robot.claw.setPosition(0);
-        robot.clawRotate.setPosition(1);
 
         if (isStopRequested()) return;
         while (opModeIsActive() && !isStopRequested()) {
@@ -155,7 +153,7 @@ public class fieldCentricTeleTest extends LinearOpMode {
                     toggleRotate = false;
                 }
                 else{
-                    robot.clawRotate.setPosition(0.5);
+                    robot.clawRotate.setPosition(1);
                     toggleRotate = true;
                 }
                 lastButtonRotate = true;
