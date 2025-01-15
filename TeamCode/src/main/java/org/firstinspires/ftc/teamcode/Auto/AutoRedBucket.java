@@ -28,8 +28,8 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 import java.util.Arrays;
 
-@Autonomous(name="NewBucketAuto", group="RedSide")
-public class NewAutoRedBucket extends LinearOpMode {
+@Autonomous(name="BucketAuto", group="RedSide")
+public class AutoRedBucket extends LinearOpMode {
     public class Lift {
         private DcMotorEx lift;
         private DcMotorEx lift2;
@@ -98,14 +98,12 @@ public class NewAutoRedBucket extends LinearOpMode {
         MecanumDrive drive = new MecanumDrive(hardwareMap, initialPose);
         robot.init(hardwareMap);
         Lift lift = new Lift(hardwareMap);
-        Vector2d basketPos = new Vector2d(-60, -60);
+        Vector2d basketPos = new Vector2d(-56, -60);
+
         waitForStart();
-        robot.clawRotate.setPosition(0);
-        robot.claw.setPosition(1);
+        robot.clawRotate.setPosition(1);
+        robot.claw.setPosition(0);
         double slideInitPos = robot.rightSlide.getCurrentPosition();
-                Vector2d releasePos = new Vector2d(-62,-62);
-        Vector2d firstPiecePos = new Vector2d(-48.5,-33.25);
-        Vector2d secondPiecePos = new Vector2d(-57,-33.25);
 
         FtcDashboard dashboard = FtcDashboard.getInstance();
         telemetry = new MultipleTelemetry(telemetry, dashboard.getTelemetry());
@@ -114,49 +112,108 @@ public class NewAutoRedBucket extends LinearOpMode {
 
         if (!isStopRequested() && opModeIsActive()) {
             TrajectoryActionBuilder action = drive.actionBuilder(initialPose)
+                    .strafeTo(new Vector2d(-34, -42))
+                    .waitSeconds(0.5)
+                    .turn(Math.toRadians(-45))
+                    .waitSeconds(0.5)
+                    .strafeTo(basketPos)
+                    .waitSeconds(0.5);
+            TrajectoryActionBuilder action2 = action.endTrajectory().fresh()
+                    .waitSeconds(1)
+                    .strafeTo(new Vector2d(-55,-62), new MinVelConstraint(Arrays.asList(
+                            new TranslationalVelConstraint(9),
+                            new AngularVelConstraint(Math.PI / 2)
+                    )));
+            TrajectoryActionBuilder midAction = action2.endTrajectory().fresh()
+                    .strafeTo(basketPos);
+            TrajectoryActionBuilder action3 = midAction.endTrajectory().fresh()
+                    .strafeToLinearHeading(new Vector2d(-42, -51), Math.toRadians(90));
+            TrajectoryActionBuilder waitingAction = drive.actionBuilder(drive.pose)
+                    .waitSeconds(0.5);
+            TrajectoryActionBuilder action4 = action3.endTrajectory().fresh()
+                    .strafeTo(basketPos)
+                    .waitSeconds(0.5);
+            TrajectoryActionBuilder action5 = action4.endTrajectory().fresh()
+                    .strafeTo(new Vector2d(-55,-63));
+            //drop preload
+//                    .turn(Math.toRadians(45))
+//                    .strafeTo(new Vector2d(-48.5, -32)) //grab first sample
 //                    .strafeTo(basketPos)
-//                .waitSeconds(0.5)
-//                .turn(Math.toRadians(-45))
-//                .waitSeconds(0.5)
-                    .lineToYConstantHeading(-55)
-                .strafeToLinearHeading(releasePos, Math.toRadians(45))
-                .waitSeconds(0.5)
-                //release preload
-                .strafeTo(basketPos)
-                .waitSeconds(0.5)
-                .strafeToSplineHeading(firstPiecePos, Math.toRadians(90)) //grab first sample
-                .waitSeconds(0.5)
-                .strafeToSplineHeading(basketPos, Math.toRadians(45))
-                .waitSeconds(0.5)
-                .strafeToSplineHeading(releasePos, Math.toRadians(45))
-                .waitSeconds(0.5)
-                .strafeToSplineHeading(basketPos, Math.toRadians(45))
-                .waitSeconds(0.5)
-                .strafeToSplineHeading(secondPiecePos, Math.toRadians(90))
-                .waitSeconds(0.5)
-                //drop sample
-                .strafeToSplineHeading(basketPos, Math.toRadians(45))
-                .waitSeconds(0.5)
-                .strafeToSplineHeading(releasePos, Math.toRadians(45))
-                .waitSeconds(0.5)
-                .strafeToSplineHeading(basketPos, Math.toRadians(45))
-                .waitSeconds(0.5)
-                //drop sample
-//                THIRD SAMPLE
-                .splineToLinearHeading(new Pose2d(-55, -36, Math.toRadians(90)), Math.PI/2)
-                .waitSeconds(0.5)
-                .splineToLinearHeading(new Pose2d(-34, -9, Math.toRadians(90)), Math.PI/2)
-                .waitSeconds(0.5)
-                .splineToLinearHeading(new Pose2d(-25, -12, Math.toRadians(90)), Math.PI/2)
-                .waitSeconds(0.5);
+//                    .turn(Math.toRadians(-45))
+//                    //drop sample
+//                    .turn(Math.toRadians(45))
+//                    .strafeTo(new Vector2d(-57, -32))
+//                    .strafeTo(basketPos)
+//                    .turn(Math.toRadians(-45))
+//                    //drop sample
+//                    .turn(Math.toRadians(45))
+////                THIRD SAMPLE
+////                .lineToY(-26)
+////                .turn(Math.toRadians(90))
+////                .lineToX(-60)
+////                .turn(Math.toRadians(-90))
+////                .strafeTo(basketPos)
+////                .turn(Math.toRadians(-45))
+//                    //drop sample
+//                    .splineToLinearHeading(new Pose2d(-22, 0, Math.toRadians(-180)), Math.PI/2);
+            lift.lift.setPower(.65);
+            lift.lift2.setPower(.65);
+            Actions.runBlocking(new SequentialAction(action.build(), action2.build()));
+            lift.lift.setPower(0);
+            lift.lift2.setPower(0);
 //            while (robot.rightSlide.getCurrentPosition() > (slideInitPos - 11594)) {
 //                robot.rightSlide.setPower(-1);
 //                robot.leftSlide.setPower(-1);
 //            }
 //            robot.rightSlide.setPower(0);
 //            robot.leftSlide.setPower(0);
-            Actions.runBlocking(action.build());
-                    }
+
+
+            Servo release = hardwareMap.get(Servo.class, "release");
+            robot.release.setPosition(0.999);
+            sleep(500);
+            Actions.runBlocking(midAction.build());
+            lift.lift.setPower(-1);
+            lift.lift2.setPower(-1);
+            Actions.runBlocking(new SequentialAction(waitingAction.build(), action3.build(), waitingAction.build()));
+            double i = runtime.milliseconds();
+            while (runtime.milliseconds() < i + 425) robot.intakeArm.setPower(0.5);
+            robot.intakeArm.setPower(0);
+            sleep(750);
+            robot.claw.setPosition(0.8);
+            robot.release.setPosition(0.15);
+            sleep(750);
+            robot.clawRotate.setPosition(0);
+            sleep(750);
+
+            double f = runtime.milliseconds();
+            while (runtime.milliseconds() < f + 1000) robot.intakeArm.setPower(-0.5);
+
+            robot.claw.setPosition(0);
+            robot.intakeArm.setPower(0);
+            sleep(500);
+            robot.clawRotate.setPosition(1);
+            sleep(500);
+            lift.lift.setPower(1);
+            lift.lift2.setPower(1);
+            Actions.runBlocking(action4.build());
+            sleep(1000);
+            robot.rightFrontDrive.setPower(-0.4);
+            robot.rightBackDrive.setPower(-0.4);
+            sleep(1000);
+            robot.rightFrontDrive.setPower(0);
+            robot.rightBackDrive.setPower(0);
+            robot.leftSlide.setPower(0);
+            robot.rightSlide.setPower(0);
+            sleep(200);
+            robot.release.setPosition(1);
+            sleep(1000);
+            robot.rightFrontDrive.setPower(0.5);
+            robot.leftFrontDrive.setPower(0.5);
+            robot.rightBackDrive.setPower(0.5);
+            robot.leftBackDrive.setPower(0.5);
+            sleep(1000);
+        }
     }
 }
 
